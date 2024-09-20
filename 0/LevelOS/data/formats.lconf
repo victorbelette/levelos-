@@ -1,0 +1,357 @@
+{
+  [ "" ] = {
+    name = "File",
+    contextMenu = {
+      {
+        "Execute",
+        "Edit",
+      },
+      {
+        "Lua",
+        "rom/programs/edit.lua",
+      },
+    },
+    openWith = {
+      "Lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        " 9 ",
+        "9bb",
+      },
+      {
+        "",
+        "   ",
+        "999",
+      },
+      {
+        "",
+        "   ",
+        "999",
+      },
+    },
+    program = "Lua",
+  },
+  nfg = {
+    name = "Animation",
+    contextMenu = {
+      {
+        "View",
+        "Edit",
+      },
+      {
+        "LevelOS/imageviewer.lua",
+        "rom/programs/edit.lua",
+      },
+    },
+    openWith = {
+      "LevelOS/imageviewer.lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        "   ",
+        "ccc",
+      },
+      {
+        "",
+        "c43",
+        "3dc",
+      },
+      {
+        "",
+        "ccc",
+        "   ",
+      },
+    },
+    program = "LevelOS/imageviewer.lua",
+  },
+  lua = {
+    name = "Lua script",
+    contextMenu = {
+      {
+        "Execute",
+        "Edit",
+      },
+      {
+        "Lua",
+        "rom/programs/edit.lua",
+      },
+    },
+    program = "Lua",
+    openWith = {
+      "Lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        " 9 ",
+        "9bb",
+      },
+      {
+        "",
+        "   ",
+        "999",
+      },
+      {
+        "lua",
+        "000",
+        "bbb",
+      },
+    },
+    emptyFilePreset = "",
+  },
+  _VERSION = "1.3",
+  sgui = {
+    name = "Shapescape GUI",
+    contextMenu = {
+      {
+        "Open",
+        "Execute",
+      },
+      {
+        "Program_Files/Shapescape",
+        "Lua",
+      },
+    },
+    program = "Program_Files/Shapescape",
+    openWith = {
+      "Lua",
+      "Program_Files/Shapescape",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        " e ",
+        "e11",
+      },
+      {
+        "",
+        "   ",
+        "eee",
+      },
+      {
+        "gui",
+        "000",
+        "111",
+      },
+    },
+    emptyFilePreset = "return {assets={},slides={{contextMenu=1,objs={},w=51,h=19}}}",
+  },
+  sml = {
+    name = "SML Document",
+    contextMenu = {
+      {
+        "Open",
+        "Edit",
+      },
+      {
+        "Program_Files/sml",
+        "rom/programs/edit.lua",
+      },
+    },
+    program = "Program_Files/sml",
+    openWith = {
+      "Program_Files/sml",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        " 5 ",
+        "5dd",
+      },
+      {
+        "",
+        "   ",
+        "555",
+      },
+      {
+        "sml",
+        "000",
+        "ddd",
+      },
+    },
+    emptyFilePreset = "",
+  },
+  txt = {
+    name = "Text file",
+    contextMenu = {
+      {
+        "Edit",
+      },
+      {
+        "LevelOS/notepad.lua",
+      },
+    },
+    program = "LevelOS/notepad.lua",
+    openWith = {
+      "LevelOS/notepad.lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        " 8 ",
+        "877",
+      },
+      {
+        "",
+        "   ",
+        "888",
+      },
+      {
+        "txt",
+        "000",
+        "777",
+      },
+    },
+    emptyFilePreset = "",
+  },
+  nfp = {
+    name = "NFP Image",
+    contextMenu = {
+      {
+        "View",
+        "Edit",
+      },
+      {
+        "LevelOS/imageviewer.lua",
+        "rom/programs/fun/advanced/paint.lua",
+      },
+    },
+    program = "LevelOS/imageviewer.lua",
+    openWith = {
+      "LevelOS/imageviewer.lua",
+      "rom/programs/fun/advanced/paint.lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        "   ",
+        "ccc",
+      },
+      {
+        "",
+        "c43",
+        "3dc",
+      },
+      {
+        "",
+        "ccc",
+        "   ",
+      },
+    },
+    emptyFilePreset = "",
+  },
+  limg = {
+    name = "Image",
+    contextMenu = {
+      {
+        "View",
+        "Edit",
+      },
+      {
+        "LevelOS/imageviewer.lua",
+        "rom/programs/edit.lua",
+      },
+    },
+    openWith = {
+      "LevelOS/imageviewer.lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        "   ",
+        "ccc",
+      },
+      {
+        "",
+        "c43",
+        "3dc",
+      },
+      {
+        "",
+        "ccc",
+        "   ",
+      },
+    },
+    program = "LevelOS/imageviewer.lua",
+  },
+  lconf = {
+    name = "Config file",
+    contextMenu = {
+      {
+        "Edit",
+      },
+      {
+        "LevelOS/notepad.lua",
+      },
+    },
+    program = "LevelOS/notepad.lua",
+    openWith = {
+      "LevelOS/notepad.lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        " 8 ",
+        "877",
+      },
+      {
+        "",
+        "   ",
+        "888",
+      },
+      {
+        "cfg",
+        "000",
+        "777",
+      },
+    },
+    emptyFilePreset = "{}",
+  },
+  bimg = {
+    name = "Image",
+    contextMenu = {
+      {
+        "View",
+        "Edit",
+      },
+      {
+        "LevelOS/imageviewer.lua",
+        "rom/programs/edit.lua",
+      },
+    },
+    openWith = {
+      "LevelOS/imageviewer.lua",
+      "rom/programs/edit.lua",
+    },
+    icon = {
+      {
+        "",
+        "   ",
+        "ccc",
+      },
+      {
+        "",
+        "c43",
+        "3dc",
+      },
+      {
+        "",
+        "ccc",
+        "   ",
+      },
+    },
+    program = "LevelOS/imageviewer.lua",
+  },
+}

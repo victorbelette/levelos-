@@ -1,0 +1,324 @@
+{
+	{
+		date = "01-06-2021",
+		version = "2.2.5",
+		description = "It's pride month! To show support, the LevelOS logo has been replaced by a rainbow variant throughout June.",
+		added = {
+			"Added changelog",
+		},
+		fixed = {
+			"lOS.execute now properly takes a window mode argument",
+			"Loading assets through lUtils no longer errors on invalid file path",
+			"lUtils.renderImg now handles transparency slightly better",
+		},
+	},
+	{
+		date = "01-06-2021",
+		version = "2.2.6",
+		fixed = {
+			"Modified changelog design and resizing",
+			"Fixed startup erroring after update",
+		},
+	},
+	{
+		date = "02-06-2021",
+		version = "2.2.7",
+		added = {
+			"Integrated global login into the LevelOS system",
+		},
+	},
+	{
+		date = "02-06-2021",
+		version = "2.2.8",
+		fixed = {
+			"Global login now only appears when LevelCloud is enabled, as was intended",
+			"Shapescape programs no longer crash on versions with mouse_move events",
+		},
+	},
+	{
+		date = "03-06-2021",
+		version = "2.2.9",
+		description = "The LevelOS search feature is currently disabled until input boxes are added.",
+		added = {
+			"LevelOS start menu is now an overlay and can be opened by both mouse buttons",
+			"Shapescape programs now clear their window when exited",
+		},
+		fixed = {
+			"Fixed LevelOS infinite-looping when booted without internet",
+		},
+	},
+	{
+		date = "03-06-2021",
+		version = "2.2.10",
+		description = "Mouse simulator will be added to LevelOS in the future",
+		added = {
+			"LevelOS can now run on classic computers when an external mouse simulator is used",
+		},
+		fixed = {
+			"Fixed the login screen getting stuck on boot until it received an event",
+			"Fixed the LevelCloud GUI showing an error when booted without internet",
+		},
+	},
+	{
+		date = "16-06-2021",
+		version = "2.2.11",
+		description = "This took too long but I finally fixed a bunch of issues in the OS. Input boxes coming soon.",
+		fixed = {
+			"Shutdown fade restored (broke in 2.2.9)",
+			"Fixed startup processes not being able to execute programs before their first yield",
+			"Fixed term_resize events being sent to every process instead of only the resizing one",
+			"Only the focused window has constant thread resuming now to improve performance",
+			"LevelOS now properly reports errors in System and SystemUI processes",
+		},
+	},
+	{
+		date = "19-06-2021",
+		version = "2.2.12",
+		description = "Some temporary fixes until the desktop and system are rewritten",
+		added = {
+			"New desktop icons for .lua files, files without extension, files with unknown extensions and LevelOS executables",
+		},
+		fixed = {
+			"LevelOS can now resize itself",
+			"Desktop no longer has weird dragging limits",
+			"Icon creation from the explorer and using lOS.genIco now works properly",
+			"Pigeon icon has been restored",
+		},
+	},
+	{
+		date = "22-11-2021",
+		version = "2.3.0",
+		description = "It's been a while, but LevelOS is back. And it's better than ever! Sorry for the long wait! The window manager has been rewritten entirely, and all sorts of cool functionality has been added. Desktop icons have been renewed but don't refresh automatically, so if you want those you have to delete desktop.lconf in LevelOS/data and hold ctrl + r.",
+		added = {
+			"The window manager now has animations on resizing, closing, opening and minimizing of windows",
+			"A tab menu (like Window's alt tab) has been added. Instead of alt, ctrl is used in LevelOS",
+			"Shell and Lua have new icons",
+			"Windows can now be in fullscreen mode by pressing f5",
+			"There's a new login screen and register screen, remember me can be toggled by logging out through the LevelCloud interface and pressing remember me in the prompt that comes up",
+			"Taskbar icons are now actual icons. Custom icons coming soon",
+			"When multiple windows of a certain program are open, they appear in the same taskbar icon",
+			"Taskbar icons can now be right clicked",
+			"Right click menu's are now overlays meaning they can go beyond their window's border",
+			"Bootup now displays what it's currently doing",
+			"The pride LevelOS icon is back due to popular demand",
+		},
+		fixed = {
+			"Desktop auto generation now works properly, may require deleting desktop.lconf in LevelOS/data and holding ctrl + r to work",
+			"The LevelOS start menu (opened by clicking the L in the bottom left corner) now appears on top of other windows",
+		},
+		major = true,
+	},
+	{
+		date = "26-12-2021",
+		version = "2.3.1",
+		description = "Merry Christmas! More changes are on the way for premium users.",
+		added = {
+			"Premium users now have an auto updater for dev builds",
+			"LevelOS now has an integrity check at startup",
+			"Replaced asterisks in login screen with circles",
+		},
+		fixed = {
+			"Minimizing widgets no longer causes a bluescreen",
+			"Clicks on the taskbar now also close widgets",
+			"Desktop shortcuts to program folders now execute properly",
+			"Start screen now properly resizes",
+		},
+	},
+	{
+		date = "22-05-2022",
+		version = "2.3.2",
+		description = "I seem to make a habit out of incredibly long delays between updates. Sorry about that. This update contains some very necessary bugfixes and some API rewrites, in wait of a bigger update with rewritten GUIs for several components in LevelOS. Stay tuned!",
+		added = {
+			"Redesigned and improved notifications",
+			"The clock now has a calendar as well",
+			"The window manager now uses a window_focus event",
+			"Shapescape now displays proper error messages when a script errors",
+		},
+		fixed = {
+			"Improved lUtils.renderImg transparency handling",
+			"Cursor no longer displays outside of window",
+			"The certificate error in the login screen has been fixed",
+			"Cursor no longer keeps blinking when a popup opens",
+		},
+	},
+	{
+		date = "22-05-2022",
+		version = "2.3.3",
+		description = "Wow! Two updates in one day!",
+		fixed = {
+			"Fixed another occurence of the certificate error in lUtils.login that I missed earlier",
+		},
+	},
+	{
+		major = true,
+		date = "04-08-2022",
+		version = "2.4.0",
+		description = "Version 2.4 is here! This version is all about the rewrites. LevelOS has gotten a completely new and rewritten desktop, which is now bound to the actual folder User/Desktop. There is also a completely new explorer, which together with the desktop supports a new shortcut system. Alongside with these big new changes, there have also been several fixes and other new features, and more will follow.",
+		added = {
+			"Rewrote the desktop, now has custom background support (right click any .nfp, .bimg or .limg image using explorer)",
+			"There is now a new shortcut system (right click any file or folder using explorer and click create shortcut)",
+			"Rewrote the explorer, now comes with a file tree, search function, icon view (icon in the bottom right) and more",
+			"Created the advanced lOS.contextmenu function, documentation will come soon",
+			"Made better taskbar icons",
+			"Changed the LevelOS file structure, LevelOS programs are now in Program_Files/LevelOS",
+			"Replaced openWith.lconf with formats.lconf, which has a better stucture",
+			"There is now a 'Yield' column in Task Manager",
+			"Added 'abort()' function to the LevelOS.close() callback function, to abort closing the program",
+			"Shutting down/rebooting now shows an interface to be able to save your work if apps have LevelOS.close() set",
+			"Added an early version of the Store",
+			"Replaced the lua repl with a custom version",
+			"Added 1 character icon support to the window manager",
+			"Added bimg support across LevelOS",
+			"Added a new program folder structure which is HIGHLY recommended you use for LevelOS programs as it allows setting custom icons: main.lua for file that gets executed when the program is ran, taskbar.bimg for the icon appearing on the taskbar (must be mostly white!) and icon.bimg for the icon appearing on desktop and more"
+		},
+		fixed = {
+			"Shapescape windows now resize properly",
+			"Fixed numerous bugs with CraftOS-PC",
+			"Solved some incompatibility issues with 1.12.2 (may not have caught all, please report if there are more)",
+			"Fixed some bugs in the login screen",
+		}
+	},
+	{
+		date = "08-08-2022",
+		version = "2.4.1",
+		description = "Thanks for the bug reports everyone! All bugs reported have been fixed, and the desktop got some necessary additions as well.",
+		added = {
+			"Right clicking an empty space on the desktop now opens a context menu for creating files and refreshing",
+			"Files can now be renamed directly from the desktop",
+		},
+		fixed = {
+			"Changed fs.combine into a vararg function on 1.12.2 to fix compatibility issues",
+			"Modified lUtils.wordwrap to account for the extra empty line that appears on CraftOS-PC",
+			"Prepared URLs for porting to a different server",
+		}
+	},
+	{
+		date = "11-08-2022",
+		version = "2.4.2",
+		added = {
+			"The text color of icons on the desktop can now be changed through the desktop context menu",
+		},
+		fixed = {
+			"Trying to perform operations on a shortcut of a deleted file no longer errors"
+		}
+	},
+	{
+		date = "01-09-2022",
+		version = "2.4.3",
+		description = "The new servers are finally here! Expect a lot of new features to follow soon that have become possible thanks to the migration.",
+		added = {
+			"Added 3x3 icons to some system folders",
+			"Migrated to new servers",
+		},
+		fixed = {
+			"Improved LevelCloud efficiency",
+			"Fixed a number of issues in the login screen",
+		}
+	},
+	{
+		date = "17-09-2022",
+		version = "2.4.4",
+		description = "Finally implemented some much needed LevelCloud features. Sync conflicts now have a proper interface and you can see the status of file synchronization in the LevelOS file explorer.",
+		added = {
+			"Explorer now shows synchronization status of cloud files",
+			"Sync conflicts in LevelCloud can now be resolved through the interface",
+			"Old context menus in LevelOS now have scrolling like the new ones",
+		}
+	},
+	{
+		date = "18-09-2022",
+		version = "2.4.5",
+		description = "It seems I broke something big last update. Sorry guys, fixed it now.",
+		fixed = {
+			"Fixed a recursion issue in the LevelOS Desktop generation that caused a crash on startup",
+		},
+	},
+	{
+		date = "12-02-2023",
+		version = "2.4.6",
+		description = "This update is all about bugfixes. The entire list of bugs has been worked through except for one, so thanks for all of the reports!",
+		fixed = {
+			"Explorer no longer crashes when the opened folder is deleted",
+			"LevelOS no longer displays a warning about LuaJIT when not using LuaJIT",
+			"LevelOS no longer crashes when being ran again after being terminated",
+			"Pressing space during a blue screen actually restarts now",
+			"The Lua REPL no longer crashes when documentation is not found",
+			"Icons no longer go under the taskbar",
+		},
+		added = {
+			"The store now displays icons of apps that use the recommended LevelOS program structure (a main.lua file with a 3x3 icon.bimg file in a folder)",
+		},
+	},
+	{
+		date = "25-11-2023",
+		version = "2.4.7",
+		description = "A small update to fix some things in the lUtils API. LevelOS 3 is in development and coming soon!",
+		fixed = {
+			"The lUtils text editor (used by the Lua REPL and Slime Text) now recognizes indenting as a change to be saved and undone",
+			"The lUtils.popup function now automatically sets width and/or height if not provided",
+			"The lUtils.popup function now uses a better word wrapping algorithm so text doesn't go outside of the box anymore",
+			"The start menu on the taskbar now opens instantly without having to receive another event",
+		},
+	},
+	{
+		date = "28-11-2023",
+		version = "2.4.8",
+		description = "Another small update with some bugfixes that were reported a while ago.",
+		fixed = {
+			"Resizing the entirety of LevelOS now works correctly",
+			"Trying to execute LevelOS within itself no longer causes a bluescreen",
+		},
+	},
+	{
+		date = "09-12-2023",
+		version = "2.4.9",
+		added = {
+			"You can now copy/paste text within the lUtils text editor using ctrl+c and ctrl+v outside of emulators as well, as long as you have some kind of text in your clipboard",
+			"Autocomplete in the lUtils text editor can now list nil values",
+			"Added lOS.getRunningProcess()",
+		}
+	},
+	{
+		date = "09-04-2024",
+		version = "2.5.0",
+		major = true,
+		description = "LevelOS 2 is finally completely compatible with CC: Tweaked 1.109! Apologies it took so long!",
+		added = {
+			"HTTP requests are now private to the programs sending them and can't conflict with eachother",
+			"The tabs and search in the store are now functional, and creator names are displayed below the program titles",
+		},
+		fixed = {
+			"LevelOS is now compatible with CC 1.109 and above",
+			"lOS.getRunningProcess() now returns the correct process at all times",
+		}
+	},
+	{
+		date = "11-04-2024",
+		version = "2.5.1",
+		fixed = {
+			"Restored compatibility with 1.12.2 versions of CC: Tweaked",
+		},
+	},
+	{
+		date = "18-04-2024",
+		version = "2.5.2",
+		fixed = {
+			"Added compatibility with the newest CraftOS-PC Accelerated",
+		},
+	},
+	{
+		date = "10-08-2024",
+		version = "2.5.3",
+		fixed = {
+			"Fixed the bluescreen upon closing the changelog on newer versions of ComputerCraft",
+			"Fixed a bug with UTF-8 decoding",
+		},
+	},
+	{
+		date = "11-08-2024",
+		version = "2.5.4",
+		fixed = {
+			"Resolved an error in the updater with the newer versions of ComputerCraft",
+		},
+	},
+}

@@ -1,0 +1,176 @@
+if mwm == nil then _G.mwm = {} end
+function tabletext(text)
+	local tTable = {}
+	for a=1,string.len(text) do
+		tTable[a] = string.sub(text,a,a)
+	end
+	return tTable
+end
+to_colors, to_blit = {}, {}
+for i = 1, 16 do
+    to_blit[2^(i-1)] = ("0123456789abcdef"):sub(i, i)
+    to_colors[("0123456789abcdef"):sub(i, i)] = 2^(i-1)
+end
+function mwm.newCvs(tX,tY)
+	local cvs = {}
+	cvs.rCvs = {}
+	cvs.oCvs = {}
+	cvs.orCvs = {}
+	cvs.color = colors.white
+	if tX == nil or tY == nil then
+		tX,tY = term.getSize()
+	end
+	for x=1,tX do
+		cvs.rCvs[x] = {}
+		for y=1,tY do
+			cvs.rCvs[x][y] = {"",term.getBackgroundColor()} -- empty pixel = ""
+		end
+	end
+	cvs.width = tX
+	cvs.height = tY
+	local function genCvs()
+	    cvs.rCvs = {}
+	    local tX,tY = cvs.width,cvs.height
+	    for x=1,tX do
+	        cvs.rCvs[x] = {}
+	        for y=1,tY do
+	            cvs.rCvs[x][y] = {"",term.getBackgroundColor()} -- empty pixel = ""
+	        end
+	    end
+	end
+	function cvs.setColor(color)
+		cvs.color = color
+	end
+	function cvs.rect(x,y,w,h,text,txtcolor)
+		if tonumber(x) == nil or tonumber(y) == nil or tonumber(w) == nil or tonumber(h) == nil then
+			return
+		end
+		if text ~= nil then
+			if txtcolor == nil then
+				txtcolor = colors.white
+			end
+			if type(text) == "string" then
+				text = {text}
+			end
+			for t=1,#text do
+				if string.len(text[t]) > w then
+					string.sub(text[t],1,w)
+				end
+			end
+		end
+		cvs.oCvs[#cvs.oCvs+1] = {type="rect",x=x,y=y,width=w,height=h,color=cvs.color,txt=text,txtcolor=txtcolor,ref=#cvs.oCvs+1}
+		return cvs.oCvs[#cvs.oCvs],true
+	end
+	function cvs.print(text,x,y)
+		if text == nil or tonumber(x) == nil or tonumber(y) == nil then
+			return
+		end
+		cvs.oCvs[#cvs.oCvs+1] = {type="text",txt=text,x=x,y=y,color=cvs.color}
+		return cvs.oCvs[#cvs.oCvs],true
+	end
+	cvs.write = cvs.print
+	function cvs.sprite(file,x,y,w,h)
+		if fs.exists(file) == false then
+			return
+		end
+		opensprite = fs.open(file,"r")
+		local sprite = opensprite.readAll()
+		opensprite.close()
+		sprite = textutils.unserialize(sprite)
+		if sprite == nil then return end
+		cvs.oCvs[#cvs.oCvs+1] = {type="sprite",texture=sprite,x=x,y=y,width=w,height=h}
+		return cvs.oCvs[#cvs.oCvs]
+	end
+	-- Support circle rendering. This can be done by calculating with math.cos how many pixels it is from one side of one y coord to the other side of the same y coord and putting that in a string. repeat this for	every y coord then draw
+	function cvs.clear()
+		cvs.oCvs = {}
+	end
+	function cvs.render(trans,x1,y1,x2,y2)
+		if x1 == nil then x1 = 1 end
+		if y1 == nil then y1 = 1 end
+		if x2 == nil then x2 = cvs.width end
+		if y2 == nil then y2 = cvs.height end
+		genCvs()
+		bgcolor = term.getBackgroundColor()
+		for a=1,#cvs.oCvs do
+			local o = cvs.oCvs[a]
+			cvs.oCvs[a].ref = a
+			o.x = math.floor(o.x+0.5)
+			o.y = math.floor(o.y+0.5)
+			if o.type == "rect" then
+				for b=1,o.height do
+					for c=1,o.width do
+						local tX,tY = term.getSize()
+						if o.x+(c-1) <= tX and o.y+(b-1) <= tY and o.x+(c-1) > 0 and o.y+(b-1) > 0 then
+							cvs.rCvs[o.x+(c-1)][o.y+(b-1)] = {" ",o.color}
+						end
+					end
+				end
+				if o.txt ~= nil and o.txtcolor ~= nil then
+					for b=1,o.height do
+						if o.txt[b] ~= nil then
+							dObj = tabletext(o.txt[b])
+							for c=1,string.len(o.txt[b]) do
+								cvs.rCvs[o.x+(c-1)][o.y+(b-1)] = {dObj[c],o.color,o.txtcolor}
+							end
+						end
+					end
+				end
+			elseif o.type == "sprite" then
+				for b=1,o.height do
+					for c=1,o.width do
+						if o.texture[c] ~= nil then
+							local tX,tY = term.getSize()
+							if o.x+(c-1) <= tX and o.y+(b-1) <= tY and o.x+(c-1) > 0 and o.y+(b-1) > 0 and o.texture[c][b] ~= nil then
+								cvs.rCvs[o.x+(c-1)][o.y+(b-1)] = o.texture[c][b]
+							end
+						end
+					end
+				end
+			elseif o.type == "text" then
+				dObj = tabletext(o.txt)
+				for b=1,#dObj do
+					local tX,tY = term.getSize()
+					if o.x+(b-1) <= tX and o.y <= tY and o.x+(b-1) > 0 and o.y > 0 then
+						cvs.rCvs[o.x+(b-1)][o.y][1] = dObj[b]
+						cvs.rCvs[o.x+(b-1)][o.y][3] = o.color
+					end
+				end
+			end
+		end
+		for y=y1,y2 do
+			bl1 = ""
+			bl2 = ""
+			bl3 = ""
+			for x=x1,x2 do
+				if not (cvs.orCvs[x] ~= nil and cvs.orCvs[x][y] == cvs.rCvs[x][y]) then
+					if cvs.rCvs[x][y][1] == "" then
+						if term.current().getLine and trans then
+							local theline = {term.current().getLine(y)}
+							bl1 = bl1..string.sub(theline[1],x,x)
+							bl2 = bl2..string.sub(theline[2],x,x)
+							bl3 = bl3..string.sub(theline[3],x,x)
+						else
+							bl1 = bl1.." "
+							bl2 = bl2..0
+							bl3 = bl3..to_blit[cvs.rCvs[x][y][2]]
+						end
+					else
+						if cvs.rCvs[x][y][3] ~= nil then
+							bl2 = bl2..to_blit[cvs.rCvs[x][y][3]]
+						else
+							bl2 = bl2..0
+						end
+						bl1 = bl1..tostring(cvs.rCvs[x][y][1])
+						bl3 = bl3..to_blit[cvs.rCvs[x][y][2]]
+					end
+				end
+			end
+			term.setCursorPos(x1,y)
+			term.blit(bl1,bl2,bl3)
+		end
+		cvs.orCvs = cvs.rCvs
+		term.setBackgroundColor(bgcolor)
+	end
+	return cvs
+end

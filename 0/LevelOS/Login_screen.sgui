@@ -1,0 +1,1734 @@
+local assets = {
+  [ "shutdownmenu.lua" ] = {
+    id = 19,
+    content = "menu = lUtils.contextmenu(\
+	self.x2,\
+	self.y1-5,\
+	10,\
+	{\
+		{txt=\"Shut down\",action=function() os.shutdown() end},\
+		{txt=\"Reboot\",action=function() os.reboot() end},\
+	},\
+	{fg=colors.white,divider=colors.cyan,txt=colors.black,selected=colors.lightBlue,bg=colors.white},\
+	true\
+)\
+menu.render()\
+while menu.status ~= \"dead\" do\
+	menu.update(os.pullEvent())\
+	menu.render()\
+end",
+    name = "shutdownmenu.lua",
+  },
+  [ "sidebar.lua" ] = {
+    id = 1,
+    content = "local s = shapescape.getSlide()\
+local function render()\
+    term.setBackgroundColor(colors.lightBlue)\
+    term.setTextColor(colors.white)\
+    local w,h = s.win.getSize()\
+    if w > 90 then\
+        self.x1 = w-34\
+    elseif w > 60 then\
+        self.x1 = w-(math.floor(w/4))\
+    else\
+        --[[term.setBackgroundColor(colors.cyan)\
+        term.clear()\
+        return]]\
+        self.x1 = w-(math.floor(w/3))\
+    end\
+    if self.y1 == 1 then\
+        self.y2 = h\
+    end\
+    os.sleep(0)\
+    term.clear()\
+    local tw,th = term.getSize()\
+    if w > 90 then\
+        bigfont.writeOn(term.current(),1,\"LevelOS\",nil,3)\
+    else\
+        term.setCursorPos(1,2)\
+        lUtils.centerText(\"LevelOS\")\
+    end\
+    local box = lUtils.input(tw*-2,1,(tw*-2)+(tw-4),1,{overflowX=\"wrap\",overflowY=\"stretch\",text=\"LevelOS\\nThe ultimate multitasking OS. With LevelOS, you can accomplish anything.\\n\\nUses Wojbie's bigfont API and Bomb Bloke's blittle API\\nMade by Leveloper\"})\
+    box.render()\
+    local height = box.y2-(box.y1-1)\
+    box.x1 = 3\
+    box.x2 = 3+(tw-4)\
+    box.y2 = th\
+    box.y1 = box.y2-(height-1)\
+    box.render()\
+    if w > 90 and h > 30 then\
+        term.setTextColor(colors.cyan)\
+        bigfont.writeOn(term.current(),2,\"L\")\
+    end\
+end\
+render()\
+while true do\
+    local e = {os.pullEvent()}\
+    render()\
+end",
+    name = "sidebar.lua",
+  },
+  [ "start.lua" ] = {
+    id = 0,
+    content = "local s = shapescape.getSlide()\
+local sl = shapescape.getSlides()\
+function sl.sleep(t)\
+    local sTime = os.clock()\
+    local tID = os.startTimer(t)\
+    while true do\
+        local e = {os.pullEvent()}\
+        if (e[1] == \"timer\" and e[2] == tID) or os.clock() >= sTime+t then\
+            return true\
+        end\
+    end\
+end\
+local function repos()\
+    local w,h = s.win.getSize()\
+    self.x1 = 1\
+    self.y1 = 1\
+    self.x2 = w\
+    self.y2 = h\
+    sl.sleep(0)\
+end\
+if not lOS.settings.timeOffset then lOS.settings.timeOffset = 0 end\
+local function render()\
+    local w,h = s.win.getSize()\
+    term.setBackgroundColor(colors.cyan)\
+    term.clear()\
+    term.setTextColor(colors.white)\
+    local t = os.epoch(\"local\")/1000+lOS.settings.timeOffset*3600\
+    if w > 110 then\
+        term.setCursorPos(4,h-13)\
+        bigfont.hugeWrite(os.date(\"%H:%M\",t))\
+        term.setCursorPos(4,h-5)\
+        bigfont.bigWrite(os.date(\"%A, %B %d\",t))\
+    else\
+        term.setCursorPos(3,h-5)\
+        bigfont.bigWrite(os.date(\"%H:%M\",t))\
+        term.setCursorPos(3,h-2)\
+        term.write(os.date(\"%A, %B %d\",t))\
+    end\
+end\
+repos()\
+render()\
+local dragY\
+while true do\
+    local e = {os.pullEvent()}\
+    if e[1] == \"term_resize\" then\
+        repos()\
+    elseif e[1] == \"key\" or e[1] == \"slide_up\" then\
+        local o = s.objs\
+        local w,h = term.getSize()\
+        local step = math.floor(h/8)\
+        s.lMenu = 2\
+        sl.sleep(0)\
+        while self.y2 >= 1 do\
+            for t=2,#o do\
+                o[t].y1 = o[t].y1-step\
+                o[t].y2 = o[t].y2-step\
+            end\
+            sl.sleep(0.05)\
+        end\
+        for t=2,#o do\
+            o[t] = nil\
+        end\
+        --s.lMenu = 2\
+    elseif e[1] == \"mouse_drag\" then\
+        if not dragY then\
+            dragY = e[4]\
+        else\
+            if e[4] < dragY-4 then\
+                os.queueEvent(\"slide_up\")\
+            end\
+        end\
+    elseif e[1] == \"mouse_up\" then\
+        dragY = nil\
+    end\
+    render()\
+end",
+    name = "start.lua",
+  },
+  [ "username.lua" ] = {
+    id = 4,
+    content = "local username\
+local sl = shapescape.getSlides()\
+if not sl.user and fs.exists(\"LevelOS/data/account.txt\") then\
+    sl.user = lUtils.fread(\"LevelOS/data/account.txt\")\
+elseif not sl.user then\
+    --sl.loggedIn = true\
+    sl.user = \"Guest\"\
+    sl.guest = true\
+end\
+local function render()\
+    if sl.user then\
+        term.setBackgroundColor(colors.cyan)\
+        term.clear()\
+        bigfont.writeOn(term.current(),1,sl.user)\
+    end\
+end\
+render()\
+while true do\
+    local e = {os.pullEvent()}\
+    if e[1] == \"term_resize\" then\
+        render()\
+    end\
+end",
+    name = "username.lua",
+  },
+  [ "auth.lua" ] = {
+    id = 11,
+    content = "local function theFunc()\
+    local sl = shapescape.getSlides()\
+    local s = shapescape.getSlide()\
+    while true do\
+        if (sl.pass and sl.pass.txt ~= \"\") or fs.exists(\"LevelOS/data/account2.txt\") then\
+            -- auth\
+            --sl.sleep(0.5)\
+            local res,err\
+            if fs.exists(\"LevelOS/data/account2.txt\") then\
+                token = lUtils.fread(\"LevelOS/data/account2.txt\")\
+                --rememberme = true\
+                res,err = http.post(\"https://os.leveloper.cc/auth.php\",\"username=\"..textutils.urlEncode(sl.user)..\"&token=\"..token)\
+            else\
+                res,err = http.post(\"https://os.leveloper.cc/auth.php\",\"username=\"..textutils.urlEncode(sl.user)..\"&password=\"..textutils.urlEncode(sl.pass.txt))\
+            end\
+            if res then\
+                local str = res.readAll()\
+                local oldstr = str\
+                str = lUtils.getField(str,\"msg\")\
+                if str:find(\"Welcome\") then\
+                    local userID = res.getResponseHeaders()[\"Set-Cookie\"]\
+                    --return userID,userbox.lines[1]\
+                    lOS.username = sl.user\
+                    lOS.userID = userID\
+                    local dur = 10\
+                    local function col(c,d)\
+                        local n = {term.nativePaletteColor(c)}\
+                        local cur = {s.win.getPaletteColor(c)}\
+                        local rgb = {}\
+                        for t=1,3 do\
+                            local st = (d[t]-n[t])/dur\
+                            rgb[t] = cur[t]+st\
+                        end\
+                        return rgb[1],rgb[2],rgb[3]\
+                    end\
+                    for t=1,dur do\
+                        for c=0,15,1 do\
+                            if t < dur then\
+                                s.win.setPaletteColor(2^c,col(2^c,{term.nativePaletteColor(colors.cyan)}))\
+                            else\
+                                s.win.setPaletteColor(2^c,term.nativePaletteColor(colors.cyan))\
+                            end\
+                        end\
+                        os.sleep(0.05)\
+                    end\
+                    lOS.isCyan = true\
+                    shapescape.exit()\
+                else\
+                    --lUtils.popup(\"Error\",str,27,11,{\"OK\"})\
+                    --sl.errorMsg = str or \"error: \"..tostring(oldstr)\
+                    if fs.exists(\"LevelOS/data/account2.txt\") then\
+                        fs.delete(\"LevelOS/data/account2.txt\")\
+                        shapescape.setSlide(1)\
+                    else\
+                        shapescape.setSlide(4)\
+                    end\
+                end\
+            else\
+                --lUtils.popup(\"Error\",\"No connection\",27,9,{\"OK\"})\
+                sl.errorMsg = err or \"Unknown connection error\"\
+                shapescape.setSlide(4)\
+            end\
+            --shapescape.setSlide(4)\
+        else\
+            sl.sleep(0.5)\
+            shapescape.setSlide(2)\
+            -- no auth\
+        end\
+        coroutine.yield()\
+    end\
+end\
+local ok,err = pcall(theFunc)\
+if not ok then\
+    _G.theError = err\
+end",
+    name = "auth.lua",
+  },
+  [ "login_bg.lua" ] = {
+    id = 6,
+    content = "term.setBackgroundColor(colors.cyan)\
+term.clear()",
+    name = "login_bg.lua",
+  },
+  [ "inputrender.lua" ] = {
+    id = 8,
+    content = "local cursor = {term.getCursorPos()}\
+if self.txt == \"\" then\
+    term.setCursorPos(self.x1+1,self.y1+1)\
+    term.setBackgroundColor(colors.white)\
+    term.setTextColor(colors.lightGray)\
+    term.write(\"Password\")\
+else\
+    term.setCursorPos(self.x1+1,self.y1+1)\
+    term.setBackgroundColor(colors.white)\
+    term.setTextColor(self.txtcolor)\
+    term.write(string.rep(\"*\",#self.txt))\
+end\
+term.setTextColor(colors.black)\
+term.setCursorPos(table.unpack(cursor))",
+    name = "inputrender.lua",
+  },
+  [ "opt_title.lua" ] = {
+    id = 15,
+    content = "term.setBackgroundColor(colors.cyan)\
+term.clear()\
+term.setTextColor(colors.white)\
+bigfont.writeOn(term.current(),1,\"Options\")",
+    name = "opt_title.lua",
+  },
+  [ "OK.lua" ] = {
+    id = 12,
+    content = "local sl = shapescape.getSlides()\
+while true do\
+    local e = {os.pullEvent()}\
+    if e[1] == \"mouse_up\" then\
+        self.color = colors.cyan\
+    elseif e[1] == \"key\" and e[2] == keys.enter then\
+        self.color = colors.lightBlue\
+    elseif e[1] == \"key_up\" and e[2] == keys.enter then\
+        self.color = colors.cyan\
+        --local x,y = sl.win.getPosition()\
+        os.queueEvent(\"mouse_up\",1,self.x1+1,self.y1+1)\
+    end\
+end",
+    name = "OK.lua",
+  },
+  [ "mclick.lua" ] = {
+    id = 3,
+    content = "",
+    name = "mclick.lua",
+  },
+  [ "inputbox.lua" ] = {
+    id = 7,
+    content = "local sl = shapescape.getSlides()\
+sl.pass = self\
+self.state = true\
+self.opt.overflowX = \"scroll\"\
+self.opt.overflowY = \"none\"\
+self.opt.overflow = \"none\"\
+self.opt.replaceChar = \"\\7\"\
+local hold = {}\
+if not lUtils.isHolding then\
+    lUtils.isHolding = function(key)\
+        if type(key) == \"string\" then\
+            key = keys[key]\
+        end\
+        return not not hold[key]\
+    end\
+end\
+while true do\
+    local e = {os.pullEvent()}\
+    if self.state then\
+        self.txtcolor = colors.black\
+    else\
+        self.txtcolor = colors.lightGray\
+    end\
+    if e[1] == \"key\" then\
+        hold[e[2]] = true\
+        if e[2] == keys.enter then\
+            self.state = false\
+        end\
+        -- auth\
+    elseif e[1] == \"key_up\" then\
+        hold[e[2]] = false\
+    end\
+end",
+    name = "inputbox.lua",
+  },
+  [ "SI_opt.lua" ] = {
+    id = 16,
+    content = "local w,h = term.getSize()\
+local x,y\
+if h > 60 then\
+    y = self.y1+1\
+else\
+    y = self.y1-1\
+end\
+x = self.x1\
+local w = self.x2-(x-1)\
+local opt = {}\
+if autologin then\
+end\
+\
+-- etc\
+lUtils.clickmenu(x,y,w,{\"Turn on auto-login\"",
+    name = "SI_opt.lua",
+  },
+  [ "OK_mouseup.lua" ] = {
+    id = 14,
+    content = "local sl = shapescape.getSlides()\
+sl.pass.txt = \"\"\
+sl.pass.state = true\
+sl.pass.dLines[1] = \"\"\
+sl.pass.lines[1] = \"\"\
+sl.pass.cursor.a = 1\
+sl.pass.cursor.x = 1\
+sl.pass.ref[2] = 1\
+shapescape.setSlide(1)",
+    name = "OK_mouseup.lua",
+  },
+  [ "loadingicon.lua" ] = {
+    id = 10,
+    content = "local sl = shapescape.getSlides()\
+local lIco = lUtils.asset.load(\"LevelOS/assets/loading.limg\")\
+local frame = 1\
+term.setBackgroundColor(colors.cyan)\
+term.clear()\
+os.sleep(0)\
+while true do\
+    lUtils.renderImg(lIco[frame],1,1)\
+    sl.sleep(0.1)\
+    frame = frame+1\
+    if frame > #lIco then\
+        frame = 1\
+    end\
+end",
+    name = "loadingicon.lua",
+  },
+  nothing = {
+    id = 17,
+    content = "-- nothing",
+    name = "nothing",
+  },
+  [ "OK_click.lua" ] = {
+    id = 13,
+    content = "self.color = colors.lightBlue",
+    name = "OK_click.lua",
+  },
+  [ "menu.lua" ] = {
+    id = 2,
+    content = "menu = lUtils.contextmenu(\
+	self.x1,\
+	self.y2+1,\
+	20,\
+	{\
+		{\
+			{txt=\"Shut down\",action=function() os.shutdown() end},\
+			{txt=\"Reboot\",action=function() os.reboot() end},\
+		},\
+		{txt=\"View Changelog\",action=function() shell.run(\"LevelOS/Changelog.lua\") end}\
+	},\
+	{fg=colors.white,txt=colors.white,selected=colors.lightBlue,bg=colors.cyan},\
+	true\
+)\
+menu.render()\
+while menu.status ~= \"dead\" do\
+	menu.update(os.pullEvent())\
+	menu.render()\
+end",
+    name = "menu.lua",
+  },
+  [ "nextbutton.lua" ] = {
+    id = 9,
+    content = "local sl = shapescape.getSlides()\
+while true do\
+    local e = {os.pullEvent()}\
+    if (e[1] == \"key\" and e[2] == keys.enter) or (e[1] == \"mouse_click\" and e[2] == 1 and e[3] >= self.x1 and e[4] >= self.y1 and e[3] <= self.x2 and e[4] <= self.y2) then\
+        --self.txtcolor = colors.cyan\
+        self.color = colors.lightGray\
+    elseif (e[1] == \"key_up\" and e[2] == keys.enter) or (e[1] == \"mouse_up\" and e[2] == 1) then\
+        self.txtcolor = colors.white\
+        self.color = colors.lightBlue\
+        if sl.pass.txt ~= \"\" and (e[1] == \"key_up\" or (e[3] >= self.x1 and e[4] >= self.y1 and e[3] <= self.x2 and e[4] <= self.y2)) then\
+            -- do auth tingz\
+            shapescape.setSlide(3)\
+        end\
+    end\
+end",
+    name = "nextbutton.lua",
+  },
+  [ "log_in_window.lua" ] = {
+    id = 5,
+    content = "local s = shapescape.getSlide()\
+s.lMenu = 1\
+local sl = shapescape.getSlides()\
+while true do\
+    if s.lMenu < 2 then\
+        coroutine.yield()\
+    else\
+        if fs.exists(\"LevelOS/data/account2.txt\") then\
+            s.lMenu = 3\
+        else\
+            s.lMenu = 2\
+        end\
+        lUtils.shapescape.run({sl[s.lMenu]})\
+    end\
+end",
+    name = "log_in_window.lua",
+  },
+  [ "showErr.lua" ] = {
+    id = 18,
+    content = "local sl = shapescape.getSlides()\
+if sl.errorMsg then\
+    self.txt = sl.errorMsg\
+    local w,h = term.getSize()\
+    --self.x1 = math.ceil(w/2)-math.floor(#self.txt)\
+    --self.x2 = self.x1+#self.txt-1\
+    self.txt = string.rep(\" \",(math.ceil(w/2)-math.floor(#self.txt))-self.x1)..self.txt\
+    sl.errorMsg = nil\
+else\
+    --sl.errorMsg = \"None\"\
+end",
+    name = "showErr.lua",
+  },
+}
+
+local nAssets = {}
+for key,value in pairs(assets) do nAssets[key] = value nAssets[assets[key].id] = assets[key] end
+assets = nAssets
+nAssets = nil
+
+local slides = {
+  {
+    y = 21,
+    x = 65,
+    h = 19,
+    w = 51,
+    objs = {
+      {
+        x2 = 51,
+        y2 = 19,
+        y1 = 1,
+        x1 = 1,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 5,
+          },
+        },
+        ox2 = 0,
+        color = 16384,
+        border = {
+          color = 2,
+          type = 1,
+        },
+        snap = {
+          Top = "Snap top",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+        oy2 = 0,
+      },
+      {
+        type = "window",
+        color = 32768,
+        y2 = 18,
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 0,
+          },
+        },
+        x1 = 3,
+        x2 = 49,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        y1 = 2,
+      },
+      {
+        x2 = 51,
+        y2 = 19,
+        y1 = 1,
+        x1 = 35,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 1,
+          },
+        },
+        ox2 = 0,
+        color = 8,
+        snap = {
+          Top = "Snap top",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap top",
+        },
+        border = {
+          color = 512,
+          type = 1,
+        },
+      },
+      {
+        x2 = 9,
+        y2 = 4,
+        border = {
+          color = 1,
+          type = 1,
+        },
+        x1 = 2,
+        txt = " Menu",
+        type = "text",
+        event = {
+          mouse_up = {
+            [ 2 ] = 2,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+        },
+        txtcolor = 1,
+        input = false,
+        color = 512,
+        y1 = 2,
+      },
+    },
+    c = 1,
+  },
+  {
+    y = 21,
+    x = 65,
+    h = 19,
+    w = 51,
+    objs = {
+      {
+        x2 = 51,
+        y2 = 19,
+        border = {
+          color = 512,
+          type = 1,
+        },
+        x1 = 1,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 6,
+          },
+        },
+        ox2 = 0,
+        color = 512,
+        y1 = 1,
+        snap = {
+          Top = "Snap top",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+        oy2 = 0,
+      },
+      {
+        color = 1,
+        cursor = {
+          y = 1,
+          x = 1,
+          a = 1,
+        },
+        x1 = 9,
+        scrollX = 0,
+        ox1 = 17,
+        txt = "",
+        opt = {
+          overflowX = "scroll",
+          overflowY = "none",
+          cursorColor = 32768,
+          indentChar = " ",
+          tabSize = 4,
+          minWidth = 31,
+          overflow = "scroll",
+          minHeight = 3,
+        },
+        event = {
+          render = {
+            [ 2 ] = 17,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 7,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          [ " render" ] = {
+            [ 2 ] = -1,
+          },
+        },
+        blit = {},
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        lines = {
+          "",
+        },
+        x2 = 39,
+        y2 = 16,
+        border = {
+          color = 512,
+          type = 1,
+        },
+        scr = 0,
+        oy1 = -4,
+        type = "input",
+        state = false,
+        ox2 = -13,
+        changed = false,
+        dLines = {
+          "",
+        },
+        y1 = 14,
+        txtcolor = 32768,
+        oy2 = -6,
+        ref = {
+          1,
+          1,
+        },
+        history = {},
+        rhistory = {},
+      },
+      {
+        x2 = 43,
+        y2 = 16,
+        x1 = 39,
+        ox1 = -13,
+        oy1 = -4,
+        txt = " ",
+        type = "text",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 9,
+          },
+        },
+        ox2 = -17,
+        y1 = 14,
+        border = {
+          color = 512,
+          type = 1,
+        },
+        color = 8,
+        input = false,
+        txtcolor = 1,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        oy2 = -6,
+      },
+      {
+        color = 512,
+        y2 = 12,
+        y1 = 10,
+        x1 = 2,
+        oy1 = 0,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 4,
+          },
+        },
+        ox2 = 1,
+        border = {
+          color = 1,
+          type = 1,
+        },
+        x2 = 50,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap center",
+        },
+        oy2 = -2,
+      },
+      {
+        x2 = 31,
+        y2 = 8,
+        x1 = 21,
+        ox1 = 5,
+        oy1 = 8,
+        type = "rect",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = -5,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        color = 512,
+        y1 = 2,
+        oy2 = 2,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        image = {
+          {
+            "",
+            "TT99TTT97TT",
+            "99777777999",
+          },
+          {
+            "",
+            "T9TTT7TTT9T",
+            "97777077779",
+          },
+          {
+            "",
+            "9TTT0T7TTT7",
+            "77777707779",
+          },
+          {
+            "",
+            "9TTT770TTT7",
+            "77770077779",
+          },
+          {
+            "",
+            "7TT70T00TT7",
+            "97707777779",
+          },
+          {
+            "",
+            "T79TTTTT77T",
+            "99777777999",
+          },
+          {
+            "",
+            "TTT77777TTT",
+            "99999999999",
+          },
+        },
+      },
+      {
+        x2 = 51,
+        y2 = 19,
+        x1 = 48,
+        ox1 = 3,
+        oy1 = 3,
+        type = "rect",
+        event = {
+          mouse_up = {
+            [ 2 ] = 19,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = 0,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        color = 512,
+        y1 = 16,
+        oy2 = 0,
+        snap = {
+          Top = "Snap bottom",
+          Right = "Snap right",
+          Left = "Snap right",
+          Bottom = "Snap bottom",
+        },
+        image = {
+          {
+            "",
+            "TTTT",
+            "T0TT",
+          },
+          {
+            "",
+            "0T00",
+            "T0TT",
+          },
+          {
+            "",
+            "00T0",
+            "TTTT",
+          },
+          {
+            "",
+            "0000",
+            "TTTT",
+          },
+        },
+      },
+      {
+        color = 0,
+        y2 = 18,
+        x1 = 19,
+        ox1 = 7,
+        oy1 = -8,
+        txt = "Sign-in options",
+        type = "text",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = -7,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        y1 = 18,
+        x2 = 33,
+        input = false,
+        txtcolor = 1,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        oy2 = -8,
+      },
+    },
+    c = 2,
+  },
+  {
+    y = 21,
+    x = 65,
+    h = 19,
+    w = 51,
+    objs = {
+      {
+        color = 512,
+        y2 = 19,
+        border = {
+          color = 512,
+          type = 1,
+        },
+        x1 = 1,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 6,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = 0,
+        x2 = 51,
+        y1 = 1,
+        snap = {
+          Top = "Snap top",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+        oy2 = 0,
+      },
+      {
+        color = 512,
+        y2 = 8,
+        x1 = 21,
+        ox1 = 5,
+        oy1 = 8,
+        type = "rect",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = -5,
+        oy2 = 2,
+        x2 = 31,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        y1 = 2,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        image = {
+          {
+            "",
+            "TT99TTT97TT",
+            "99777777999",
+          },
+          {
+            "",
+            "T9TTT7TTT9T",
+            "97777077779",
+          },
+          {
+            "",
+            "9TTT0T7TTT7",
+            "77777707779",
+          },
+          {
+            "",
+            "9TTT770TTT7",
+            "77770077779",
+          },
+          {
+            "",
+            "7TT70T00TT7",
+            "97707777779",
+          },
+          {
+            "",
+            "T79TTTTT77T",
+            "99777777999",
+          },
+          {
+            "",
+            "TTT77777TTT",
+            "99999999999",
+          },
+        },
+      },
+      {
+        x2 = 50,
+        y2 = 12,
+        border = {
+          color = 1,
+          type = 1,
+        },
+        x1 = 2,
+        oy1 = 0,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 4,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = 1,
+        y1 = 10,
+        color = 512,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap center",
+        },
+        oy2 = -2,
+      },
+      {
+        x2 = 30,
+        y2 = 15,
+        x1 = 24,
+        ox1 = 2,
+        oy1 = -5,
+        txt = "Welcome",
+        type = "text",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          [ " Coroutine" ] = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 11,
+          },
+        },
+        ox2 = -4,
+        y1 = 15,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        color = 0,
+        input = false,
+        txtcolor = 1,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        oy2 = -5,
+      },
+      {
+        color = 32768,
+        y2 = 16,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        x1 = 19,
+        ox1 = 7,
+        oy1 = -4,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 10,
+          },
+        },
+        ox2 = 4,
+        oy2 = -6,
+        x2 = 22,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        y1 = 14,
+      },
+    },
+    c = 3,
+  },
+  {
+    y = 21,
+    x = 65,
+    h = 19,
+    w = 51,
+    objs = {
+      {
+        x2 = 51,
+        y2 = 19,
+        y1 = 1,
+        x1 = 1,
+        type = "window",
+        event = {
+          render = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 6,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = 0,
+        color = 512,
+        border = {
+          color = 512,
+          type = 1,
+        },
+        snap = {
+          Top = "Snap top",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+        oy2 = 0,
+      },
+      {
+        color = 512,
+        y2 = 8,
+        x1 = 21,
+        ox1 = 5,
+        oy1 = 8,
+        type = "rect",
+        oy2 = 2,
+        ox2 = -5,
+        event = {
+          render = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+        },
+        x2 = 31,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        y1 = 2,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        image = {
+          {
+            "",
+            "TT99TTT97TT",
+            "99777777999",
+          },
+          {
+            "",
+            "T9TTT7TTT9T",
+            "97777077779",
+          },
+          {
+            "",
+            "9TTT0T7TTT7",
+            "77777707779",
+          },
+          {
+            "",
+            "9TTT770TTT7",
+            "77770077779",
+          },
+          {
+            "",
+            "7TT70T00TT7",
+            "97707777779",
+          },
+          {
+            "",
+            "T79TTTTT77T",
+            "99777777999",
+          },
+          {
+            "",
+            "TTT77777TTT",
+            "99999999999",
+          },
+        },
+      },
+      {
+        x2 = 50,
+        y2 = 12,
+        y1 = 10,
+        x1 = 2,
+        oy1 = 0,
+        type = "window",
+        event = {
+          render = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 4,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = 1,
+        border = {
+          color = 1,
+          type = 1,
+        },
+        color = 512,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap center",
+        },
+        oy2 = -2,
+      },
+      {
+        color = 0,
+        y2 = 14,
+        x1 = 8,
+        ox1 = 18,
+        oy1 = -4,
+        txt = "Password incorrect. Please try again.",
+        type = "text",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = 18,
+          },
+        },
+        ox2 = -18,
+        txtcolor = 1,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        x2 = 44,
+        input = false,
+        y1 = 14,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        oy2 = -4,
+      },
+      {
+        color = 512,
+        y2 = 18,
+        x1 = 21,
+        ox1 = 5,
+        oy1 = -6,
+        txt = "   OK",
+        type = "text",
+        event = {
+          mouse_up = {
+            [ 2 ] = 14,
+          },
+          mouse_click = {
+            [ 2 ] = 13,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 12,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = -4,
+        txtcolor = 1,
+        border = {
+          color = 1,
+          type = 1,
+        },
+        x2 = 30,
+        input = false,
+        y1 = 16,
+        snap = {
+          Top = "Snap center",
+          Right = "Snap center",
+          Left = "Snap center",
+          Bottom = "Snap center",
+        },
+        oy2 = -8,
+      },
+    },
+    c = 4,
+  },
+  {
+    y = 21,
+    x = 65,
+    h = 19,
+    w = 51,
+    objs = {
+      {
+        x2 = 51,
+        y2 = 19,
+        y1 = 1,
+        x1 = 1,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = 6,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = 0,
+        color = 512,
+        border = {
+          color = 512,
+          type = 1,
+        },
+        snap = {
+          Top = "Snap top",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+        oy2 = 0,
+      },
+      {
+        type = "window",
+        color = 32768,
+        y2 = 5,
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        x1 = 12,
+        x2 = 40,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        y1 = 3,
+      },
+      {
+        type = "rect",
+        color = 512,
+        y2 = 6,
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        x1 = 1,
+        x2 = 11,
+        border = {
+          color = 2048,
+          type = 1,
+        },
+        y1 = 2,
+      },
+      {
+        type = "rect",
+        color = 512,
+        y2 = 6,
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+        },
+        x1 = 41,
+        y1 = 2,
+        x2 = 51,
+        border = {
+          color = 2048,
+          type = 1,
+        },
+      },
+    },
+    c = 5,
+  },
+}
+
+for s=1,#slides do
+	local slide = slides[s]
+	for o=1,#slide.objs do
+		local obj = slide.objs[o]
+		for key,value in pairs(obj.event) do
+			if assets[ value[2] ] then
+				lUtils.shapescape.addScript(obj,value[2],key,assets,LevelOS,slides)
+			else
+				obj.event[key] = {function() end,-1}
+			end
+		end
+	end
+end
+
+	local tArgs = {...}
+if tArgs[1] and tArgs[1] == "load" then
+	return {assets=assets,slides=slides}
+end
+
+
+return lUtils.shapescape.run(slides,...)

@@ -1,0 +1,327 @@
+local assets = {
+  [ "programs.lua" ] = {
+    id = 0,
+    content = "local scrollY = 0\
+local programs = {}\
+local found = fs.list(\"Program_Files\")\
+local icons = lUtils.asset.load(\"LevelOS/assets/Compact_Icons.limg\")\
+local A = string.byte(\"A\")\
+local Z = string.byte(\"Z\")\
+for f=1,#found do\
+    local l = string.byte(found[f]:sub(1,1):upper())\
+    local dest\
+    if l >= A and l <= Z then\
+        if not programs[l] then programs[l] = {} end\
+        dest = programs[l]\
+    else\
+        if not programs[A-1] then programs[A-1] = {} end\
+        dest = programs[A-1]\
+    end\
+    local program = {path=fs.combine(\"Program_Files\",found[f]),name=found[f]:sub(1,1):upper()..lUtils.getFileName(found[f]:sub(2))}\
+    --program.icon = whatever\
+    table.insert(dest,program)\
+end\
+local function render()\
+    local y = 2\
+    term.setBackgroundColor(colors.gray)\
+    term.setTextColor(colors.white)\
+    term.clear()\
+    for l=A-1,Z do\
+        if programs[l] then\
+            local letter\
+            if l == A-1 then\
+                letter = \"#\"\
+            else\
+                letter = string.char(l)\
+            end\
+            term.setCursorPos(1,y)\
+            term.write(letter)\
+            y = y+2\
+            for t=1,#programs[l] do\
+                lUtils.renderImg(icons[8],1,y)\
+                term.setCursorPos(5,y)\
+                term.setTextColor(colors.white)\
+                term.write(programs[l][t].name)\
+                y = y+1\
+                term.setTextColor(colors.lightGray)\
+                term.write( -- creator\
+        end\
+    end\
+end",
+    name = "programs.lua",
+  },
+}
+
+local nAssets = {}
+for key,value in pairs(assets) do nAssets[key] = value nAssets[assets[key].id] = assets[key] end
+assets = nAssets
+nAssets = nil
+
+local slides = {
+  {
+    y = 21,
+    x = 61,
+    w = 51,
+    h = 19,
+    objs = {
+      {
+        color = 128,
+        y2 = 19,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        x1 = 1,
+        type = "rect",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        x2 = 5,
+        y1 = 1,
+        snap = {
+          Top = "Snap top",
+          Right = "Snap left",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+        oy2 = 0,
+      },
+      {
+        color = 128,
+        y2 = 18,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        x1 = 2,
+        image = {
+          {
+            "",
+            "000",
+            "TTT",
+          },
+          {
+            "",
+            "000",
+            "TTT",
+          },
+        },
+        oy1 = 2,
+        type = "rect",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        oy2 = 1,
+        x2 = 4,
+        y1 = 17,
+        snap = {
+          Top = "Snap bottom",
+          Right = "Snap left",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+      },
+      {
+        color = 128,
+        y2 = 15,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        x1 = 2,
+        image = {
+          {
+            "",
+            "TT0",
+            "00T",
+          },
+          {
+            "",
+            "00T",
+            "TTT",
+          },
+        },
+        oy1 = 5,
+        type = "rect",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        oy2 = 4,
+        x2 = 4,
+        y1 = 14,
+        snap = {
+          Top = "Snap bottom",
+          Right = "Snap left",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+      },
+      {
+        color = 128,
+        y2 = 12,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        x1 = 2,
+        image = {
+          {
+            "",
+            "TT0",
+            "00T",
+          },
+          {
+            "",
+            "00T",
+            "TTT",
+          },
+        },
+        oy1 = 8,
+        type = "rect",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        oy2 = 7,
+        x2 = 4,
+        y1 = 11,
+        snap = {
+          Top = "Snap bottom",
+          Right = "Snap left",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+      },
+      {
+        color = 128,
+        y2 = 19,
+        y1 = 1,
+        x1 = 6,
+        type = "window",
+        event = {
+          mouse_up = {
+            [ 2 ] = -1,
+          },
+          mouse_click = {
+            [ 2 ] = -1,
+          },
+          focus = {
+            [ 2 ] = -1,
+          },
+          render = {
+            [ 2 ] = -1,
+          },
+          update = {
+            [ 2 ] = -1,
+          },
+          Coroutine = {
+            [ 2 ] = -1,
+          },
+        },
+        ox2 = 0,
+        x2 = 51,
+        border = {
+          color = 0,
+          type = 1,
+        },
+        snap = {
+          Top = "Snap top",
+          Right = "Snap right",
+          Left = "Snap left",
+          Bottom = "Snap bottom",
+        },
+        oy2 = 0,
+      },
+    },
+    c = 1,
+  },
+}
+
+for s=1,#slides do
+		local slide = slides[s]
+		for o=1,#slide.objs do
+			local obj = slide.objs[o]
+			for key,value in pairs(obj.event) do
+				if assets[ value[2] ] then
+					lUtils.shapescape.addScript(obj,value[2],key,assets,LevelOS,slides)
+				else
+					obj.event[key] = {function() end,-1}
+				end
+			end
+		end
+	end
+
+		local tArgs = {...}
+	if tArgs[1] and tArgs[1] == "load" then
+		return {assets=assets,slides=slides}
+	end
+
+	
+	lUtils.shapescape.run(slides,...)
